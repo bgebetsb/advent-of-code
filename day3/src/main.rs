@@ -1,6 +1,6 @@
-use std::fs::read_to_string;
-use std::error::Error;
 use regex::Regex;
+use std::error::Error;
+use std::fs::read_to_string;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let content = read_to_string("input.txt")?;

@@ -1,6 +1,6 @@
+use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::error::Error;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 enum Status {
