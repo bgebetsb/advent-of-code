@@ -5,16 +5,10 @@ use utils::*;
 fn check_valid(rules: &Vec<Vec<i32>>, input: &Vec<i32>) -> bool {
     for i in 0..input.len() {
         for rule in rules {
-            if rule[0] == input[i] || rule[1] == input[i] {
-                for j in 0..input.len() {
-                    if rule[0] == input[i] && rule[1] == input[j] {
-                        if j < i {
-                            return false;
-                        }
-                    } else if i != j && rule[0] == input[j] && rule[1] == input[i] {
-                        if i < j {
-                            return false;
-                        }
+            if rule[0] == input[i] {
+                for j in 0..i {
+                    if rule[1] == input[j] {
+                        return false;
                     }
                 }
             }
