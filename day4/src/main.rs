@@ -1,5 +1,5 @@
-use std::error::Error;
-use utils::read_characters;
+use std::{error::Error, fs::read_to_string};
+use utils::*;
 
 enum Directions {
     Left,
@@ -70,7 +70,7 @@ fn search_string(
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let chars = read_characters("input.txt")?;
+    let chars = read_to_string("input.txt")?.get_lines().lines_as_bytes();
 
     let mut total = 0;
     let haystack = "MAS".as_bytes();
