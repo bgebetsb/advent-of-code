@@ -1,6 +1,3 @@
-use std::error::Error;
-use std::fs::read_to_string;
-
 pub trait StringVecHandling {
     fn lines_as_bytes(&self) -> Vec<Vec<u8>>;
     fn numbers_in_line(&self, delimiter: u8) -> Vec<Vec<i32>>;
