@@ -20,7 +20,7 @@ fn search_string(
     search: &[u8],
     sum: &mut u32,
 ) {
-    if search == &[] {
+    if search.is_empty() {
         *sum += 1;
         return;
     }
@@ -120,14 +120,12 @@ fn main() -> Result<(), Box<dyn Error>> {
                 && j != 0
                 && i != chars.len() - 1
                 && j != chars[i].len() - 1
-            {
-                if ((chars[i - 1][j - 1] == b'M' && chars[i + 1][j + 1] == b'S')
+                && ((chars[i - 1][j - 1] == b'M' && chars[i + 1][j + 1] == b'S')
                     || (chars[i - 1][j - 1] == b'S' && chars[i + 1][j + 1] == b'M'))
-                    && ((chars[i + 1][j - 1] == b'M' && chars[i - 1][j + 1] == b'S')
-                        || (chars[i - 1][j + 1] == b'M' && chars[i + 1][j - 1] == b'S'))
-                {
-                    total_2 += 1;
-                }
+                && ((chars[i + 1][j - 1] == b'M' && chars[i - 1][j + 1] == b'S')
+                    || (chars[i - 1][j + 1] == b'M' && chars[i + 1][j - 1] == b'S'))
+            {
+                total_2 += 1;
             }
         }
     }

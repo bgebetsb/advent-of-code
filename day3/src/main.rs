@@ -11,9 +11,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut count_enabled = true;
     let re = Regex::new(r"(do\(\))|(don't\(\))|mul\(([0-9]{1,3}),([0-9]{1,3})\)")?;
     for captures in re.captures_iter(&content) {
-        if let Some(_) = captures.get(1) {
+        if captures.get(1).is_some() {
             count_enabled = true;
-        } else if let Some(_) = captures.get(2) {
+        } else if captures.get(2).is_some() {
             count_enabled = false;
         } else {
             let nbr1 = captures.get(3).unwrap().as_str().parse::<i32>()?;

@@ -19,7 +19,7 @@ struct MapField {
 impl MapField {
     fn new(field_type: u8) -> Self {
         MapField {
-            field_type: field_type,
+            field_type,
             visited: Vec::new(),
         }
     }
@@ -31,10 +31,10 @@ enum MapResult {
     Finished(usize),
 }
 
-fn get_start_pos(map: &Vec<Vec<MapField>>) -> Option<(usize, usize)> {
-    for i in 0..map.len() {
-        for j in 0..map[i].len() {
-            if map[i][j].field_type == b'^' {
+fn get_start_pos(map: &[Vec<MapField>]) -> Option<(usize, usize)> {
+    for (i, line) in map.iter().enumerate() {
+        for (j, field) in line.iter().enumerate() {
+            if field.field_type == b'^' {
                 return Some((i, j));
             }
         }
@@ -42,8 +42,8 @@ fn get_start_pos(map: &Vec<Vec<MapField>>) -> Option<(usize, usize)> {
     None
 }
 
-fn run_simulation(og_map: &Vec<Vec<MapField>>) -> MapResult {
-    let mut map = og_map.clone();
+fn run_simulation(og_map: &[Vec<MapField>]) -> MapResult {
+    let mut map = og_map.to_owned();
     let (starty, startx) = get_start_pos(&map).expect("Unable to find start position");
     let mut direction = Directions::North;
 
@@ -97,7 +97,7 @@ fn run_simulation(og_map: &Vec<Vec<MapField>>) -> MapResult {
     }
 }
 
-fn convert_input(input: &Vec<Vec<u8>>) -> Vec<Vec<MapField>> {
+fn convert_input(input: &[Vec<u8>]) -> Vec<Vec<MapField>> {
     let mut mapfields = Vec::new();
     for i in 0..input.len() {
         mapfields.push(Vec::new());

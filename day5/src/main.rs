@@ -2,12 +2,12 @@ use std::fs::read_to_string;
 use std::io;
 use utils::*;
 
-fn check_valid(rules: &Vec<Vec<i128>>, input: &Vec<i128>) -> bool {
+fn check_valid(rules: &Vec<Vec<i128>>, input: &[i128]) -> bool {
     for i in 0..input.len() {
         for rule in rules {
             if rule[0] == input[i] {
-                for j in 0..i {
-                    if rule[1] == input[j] {
+                for item in input.iter().take(i) {
+                    if rule[1] == *item {
                         return false;
                     }
                 }
@@ -17,16 +17,14 @@ fn check_valid(rules: &Vec<Vec<i128>>, input: &Vec<i128>) -> bool {
     true
 }
 
-fn check_valid_swap(rules: &Vec<Vec<i128>>, input: &mut Vec<i128>) -> bool {
+fn check_valid_swap(rules: &Vec<Vec<i128>>, input: &mut [i128]) -> bool {
     let mut sorted = true;
     for i in 0..input.len() {
         for rule in rules {
             if rule[0] == input[i] {
                 for j in 0..i {
                     if rule[1] == input[j] {
-                        let tmp = input[i];
-                        input[i] = input[j];
-                        input[j] = tmp;
+                        input.swap(i, j);
                         sorted = false;
                     }
                 }
@@ -45,7 +43,7 @@ fn main() -> Result<(), io::Error> {
     let mut sum = 0;
     let mut sum_part_2 = 0;
     for item in &mut items {
-        if check_valid(&rules, &item) {
+        if check_valid(&rules, item) {
             sum += item[item.len() / 2];
         } else {
             while !check_valid_swap(&rules, item) {}

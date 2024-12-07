@@ -6,9 +6,7 @@ pub trait StringVecHandling {
 
 impl StringVecHandling for Vec<String> {
     fn lines_as_bytes(&self) -> Vec<Vec<u8>> {
-        self.iter()
-            .map(|line| line.as_bytes().to_vec())
-            .collect()
+        self.iter().map(|line| line.as_bytes().to_vec()).collect()
     }
 
     fn numbers_in_line(&self, delimiter: u8) -> Vec<Vec<i128>> {
