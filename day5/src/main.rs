@@ -2,7 +2,7 @@ use std::fs::read_to_string;
 use std::io;
 use utils::*;
 
-fn check_valid(rules: &Vec<Vec<i32>>, input: &Vec<i32>) -> bool {
+fn check_valid(rules: &Vec<Vec<i128>>, input: &Vec<i128>) -> bool {
     for i in 0..input.len() {
         for rule in rules {
             if rule[0] == input[i] {
@@ -17,7 +17,7 @@ fn check_valid(rules: &Vec<Vec<i32>>, input: &Vec<i32>) -> bool {
     true
 }
 
-fn check_valid_swap(rules: &Vec<Vec<i32>>, input: &mut Vec<i32>) -> bool {
+fn check_valid_swap(rules: &Vec<Vec<i128>>, input: &mut Vec<i128>) -> bool {
     let mut sorted = true;
     for i in 0..input.len() {
         for rule in rules {
