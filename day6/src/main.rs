@@ -101,7 +101,7 @@ fn run_simulation(og_map: &[Vec<MapField>]) -> MapResult {
     }
 }
 
-fn convert_input(input: &Vec<Vec<char>>) -> Vec<Vec<MapField>> {
+fn convert_input(input: &[Vec<char>]) -> Vec<Vec<MapField>> {
     let mut mapfields = Vec::new();
     for i in 0..input.len() {
         mapfields.push(Vec::new());
