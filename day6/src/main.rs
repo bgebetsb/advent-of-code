@@ -12,12 +12,12 @@ enum Directions {
 
 #[derive(Clone, Debug)]
 struct MapField {
-    field_type: u8,
+    field_type: char,
     visited: Vec<Directions>,
 }
 
 impl MapField {
-    fn new(field_type: u8) -> Self {
+    fn new(field_type: char) -> Self {
         MapField {
             field_type,
             visited: Vec::new(),
@@ -34,7 +34,7 @@ enum MapResult {
 fn get_start_pos(map: &[Vec<MapField>]) -> Option<(usize, usize)> {
     for (i, line) in map.iter().enumerate() {
         for (j, field) in line.iter().enumerate() {
-            if field.field_type == b'^' {
+            if field.field_type == '^' {
                 return Some((i, j));
             }
         }
@@ -70,28 +70,28 @@ fn run_simulation(og_map: &[Vec<MapField>]) -> MapResult {
 
         match direction {
             Directions::North => {
-                if map[y - 1][x].field_type == b'#' {
+                if map[y - 1][x].field_type == '#' {
                     direction = Directions::East;
                 } else {
                     y -= 1;
                 }
             }
             Directions::East => {
-                if map[y][x + 1].field_type == b'#' {
+                if map[y][x + 1].field_type == '#' {
                     direction = Directions::South;
                 } else {
                     x += 1;
                 }
             }
             Directions::South => {
-                if map[y + 1][x].field_type == b'#' {
+                if map[y + 1][x].field_type == '#' {
                     direction = Directions::West;
                 } else {
                     y += 1;
                 }
             }
             _ => {
-                if map[y][x - 1].field_type == b'#' {
+                if map[y][x - 1].field_type == '#' {
                     direction = Directions::North;
                 } else {
                     x -= 1;
@@ -101,7 +101,7 @@ fn run_simulation(og_map: &[Vec<MapField>]) -> MapResult {
     }
 }
 
-fn convert_input(input: &[Vec<u8>]) -> Vec<Vec<MapField>> {
+fn convert_input(input: &Vec<Vec<char>>) -> Vec<Vec<MapField>> {
     let mut mapfields = Vec::new();
     for i in 0..input.len() {
         mapfields.push(Vec::new());
@@ -113,7 +113,7 @@ fn convert_input(input: &[Vec<u8>]) -> Vec<Vec<MapField>> {
 }
 
 fn main() -> Result<(), io::Error> {
-    let chars = read_to_string("input.txt")?.get_lines().lines_as_bytes();
+    let chars = read_to_string("input.txt")?.get_lines().lines_as_chars();
     let mut map = convert_input(&chars);
 
     let result = run_simulation(&map);
@@ -122,11 +122,11 @@ fn main() -> Result<(), io::Error> {
     if let MapResult::Finished(value, visited_fields) = result {
         println!("Part 1: {}", value);
         for field in visited_fields {
-            map[field.0][field.1].field_type = b'#';
+            map[field.0][field.1].field_type = '#';
             if run_simulation(&map) == MapResult::Infinite {
                 infinite_count += 1;
             }
-            map[field.0][field.1].field_type = b'.';
+            map[field.0][field.1].field_type = '.';
         }
     }
     
