@@ -117,10 +117,10 @@ fn main() -> Result<(), io::Error> {
     let mut map = convert_input(&chars);
 
     let result = run_simulation(&map);
-    let mut infinite_count = 0;
 
     if let MapResult::Finished(value, visited_fields) = result {
         println!("Part 1: {}", value);
+        let mut infinite_count = 0;
         for field in visited_fields {
             map[field.0][field.1].field_type = '#';
             if run_simulation(&map) == MapResult::Infinite {
@@ -128,9 +128,8 @@ fn main() -> Result<(), io::Error> {
             }
             map[field.0][field.1].field_type = '.';
         }
+        println!("Part 2: {}", infinite_count);
     }
-    
-    println!("Part 2: {}", infinite_count);
 
     Ok(())
 }
