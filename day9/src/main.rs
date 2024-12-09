@@ -1,6 +1,7 @@
 use std::fs::read_to_string;
 use std::io;
 use std::mem;
+use utils::*;
 
 #[derive(Clone)]
 enum ItemType {
@@ -90,8 +91,7 @@ fn calculate_result(items: &[ItemType]) -> usize {
 }
 
 fn main() -> Result<(), io::Error> {
-    let input = read_to_string("input.txt")?;
-    let chars: Vec<char> = input.chars().filter(|c| !c.is_whitespace()).collect();
+    let chars = read_to_string("input.txt")?.get_chars_without_nl();
 
     let mut part1_items = create_items_part1(&chars);
     move_one_block(&mut part1_items);
