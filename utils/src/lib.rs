@@ -1,15 +1,10 @@
 pub trait StringVecHandling {
-    fn lines_as_bytes(&self) -> Vec<Vec<u8>>;
     fn lines_as_chars(&self) -> Vec<Vec<char>>;
     fn numbers_in_line(&self, delimiter: u8) -> Vec<Vec<i128>>;
     fn numbers_in_column(&self, delimiter: u8) -> Vec<Vec<i128>>;
 }
 
 impl StringVecHandling for Vec<String> {
-    fn lines_as_bytes(&self) -> Vec<Vec<u8>> {
-        self.iter().map(|line| line.as_bytes().to_vec()).collect()
-    }
-
     fn lines_as_chars(&self) -> Vec<Vec<char>> {
         self.iter().map(|line| line.chars().collect()).collect()
     }
