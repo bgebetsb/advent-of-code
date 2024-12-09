@@ -43,11 +43,9 @@ fn create_items_part2(chars: &[char]) -> Vec<ItemType> {
 fn move_one_block(items: &mut [ItemType]) {
     for i in (0..items.len()).rev() {
         for j in 0..i {
-            if let ItemType::File(_, _) = items[i] {
-                if let ItemType::Space(_) = items[j] {
-                    items.swap(i, j);
-                    break;
-                }
+            if let (&ItemType::File(_, _), &ItemType::Space(_)) = (&items[i], &items[j]) {
+                items.swap(i, j);
+                break;
             }
         }
     }
