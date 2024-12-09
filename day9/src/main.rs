@@ -1,5 +1,6 @@
 use std::fs::read_to_string;
 use std::io;
+use std::mem;
 
 #[derive(Clone)]
 enum ItemType {
@@ -55,22 +56,19 @@ fn move_one_block(items: &mut [ItemType]) {
 fn move_whole_items(items: &mut Vec<ItemType>) {
     for i in (0..items.len()).rev() {
         for j in 0..i {
-            if let ItemType::File(_, filesize) = items[i] {
-                if let ItemType::Space(spacesize) = items[j] {
-                    if spacesize < filesize {
-                        continue;
-                    }
-                    let sizediff = spacesize - filesize;
-                    let originalfile = items[i].clone();
-                    items.remove(i);
-                    items.insert(i, ItemType::Space(filesize));
-                    items.remove(j);
-                    items.insert(j, originalfile);
-                    if sizediff > 0 {
-                        items.insert(j + 1, ItemType::Space(sizediff));
-                    }
-                    break;
+            if let (&ItemType::File(_, filesize), &ItemType::Space(spacesize)) =
+                (&items[i], &items[j])
+            {
+                if spacesize < filesize {
+                    continue;
                 }
+                let sizediff = spacesize - filesize;
+                let originalfile = mem::replace(&mut items[i], ItemType::Space(filesize));
+                items[j] = originalfile;
+                if sizediff > 0 {
+                    items.insert(j + 1, ItemType::Space(sizediff));
+                }
+                break;
             }
         }
     }
