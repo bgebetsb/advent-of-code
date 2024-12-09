@@ -43,17 +43,15 @@ fn calculate_result(input: &mut InputLine, current_value: i128, position: usize,
 fn main() -> Result<(), io::Error> {
     let lines = read_to_string("input.txt")?.get_lines();
 
-    let firstpart = lines.numbers_in_line(b':');
-    let list = lines.numbers_in_line(b' ');
-
-    let mut input = Vec::new();
-    for i in 0..firstpart.len() {
-        input.push(InputLine {
-            key: firstpart[i][0],
-            list: list[i].clone(),
+    let mut input: Vec<InputLine> = lines
+        .split_with_key::<i128, i128>(':')
+        .iter()
+        .map(|(key, values)| InputLine {
+            key: *key,
+            list: values.clone(),
             possible: false,
-        });
-    }
+        })
+        .collect();
 
     let mut sum = 0;
     let mut sum_part2 = 0;
