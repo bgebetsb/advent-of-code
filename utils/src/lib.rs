@@ -92,7 +92,7 @@ impl StringVecHandling for Vec<String> {
 
 pub trait StringHandling {
     fn get_lines(&self) -> Vec<String>;
-    fn get_chars_without_nl(&self) -> Vec<char>;
+    fn get_chars_trimmed(&self) -> Vec<char>;
 }
 
 impl StringHandling for String {
@@ -100,7 +100,7 @@ impl StringHandling for String {
         self.lines().map(String::from).collect()
     }
 
-    fn get_chars_without_nl(&self) -> Vec<char> {
-        self.chars().filter(|&c| c != '\n').collect()
+    fn get_chars_trimmed(&self) -> Vec<char> {
+        self.trim().chars().collect()
     }
 }

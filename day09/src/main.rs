@@ -91,7 +91,7 @@ fn calculate_result(items: &[ItemType]) -> usize {
 }
 
 fn main() -> Result<(), io::Error> {
-    let chars = read_to_string("input.txt")?.get_chars_without_nl();
+    let chars = read_to_string("input.txt")?.get_chars_trimmed();
 
     let mut part1_items = create_items_part1(&chars);
     move_one_block(&mut part1_items);
