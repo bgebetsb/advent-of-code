@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 pub trait StringVecHandling {
     fn lines_as_chars(&self) -> Vec<Vec<char>>;
+    fn digits_grid(&self) -> Vec<Vec<u8>>;
     fn numbers_in_line(&self, delimiter: u8) -> Vec<Vec<i128>>;
     fn numbers_in_column(&self, delimiter: u8) -> Vec<Vec<i128>>;
     fn split_with_key<K, V>(&self, delimiter: char) -> Vec<(K, Vec<V>)>
@@ -13,6 +14,16 @@ pub trait StringVecHandling {
 impl StringVecHandling for Vec<String> {
     fn lines_as_chars(&self) -> Vec<Vec<char>> {
         self.iter().map(|line| line.chars().collect()).collect()
+    }
+
+    fn digits_grid(&self) -> Vec<Vec<u8>> {
+        self.iter()
+            .map(|line| {
+                line.split_whitespace()
+                    .flat_map(|item| item.chars().map(|c| c.to_digit(10).unwrap() as u8))
+                    .collect()
+            })
+            .collect()
     }
 
     fn numbers_in_line(&self, delimiter: u8) -> Vec<Vec<i128>> {
