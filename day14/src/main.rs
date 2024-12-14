@@ -3,12 +3,21 @@ use std::io;
 use utils::*;
 
 #[derive(Debug, Clone)]
-struct MapLine {
+struct Robot {
     position: (i128, i128),
     velocities: (i128, i128),
 }
 
-fn print_map(map: &[MapLine], width: i128, height: i128) {
+impl From<Vec<i128>> for Robot {
+    fn from(input: Vec<i128>) -> Self {
+        Self {
+            position: (input[0], input[1]),
+            velocities: (input[2], input[3]),
+        }
+    }
+}
+
+fn print_map(map: &[Robot], width: i128, height: i128) {
     let mut grid = vec![vec![0; width as usize]; height as usize];
 
     for robot in map {
@@ -27,7 +36,7 @@ fn print_map(map: &[MapLine], width: i128, height: i128) {
     }
 }
 
-fn find_diagonal(map: &[MapLine], x: i128, y: i128, count: i128, stop: i128) -> bool {
+fn find_diagonal(map: &[Robot], x: i128, y: i128, count: i128, stop: i128) -> bool {
     let mut left_found = false;
     let mut right_found = false;
 
@@ -51,7 +60,7 @@ fn find_diagonal(map: &[MapLine], x: i128, y: i128, count: i128, stop: i128) -> 
     true
 }
 
-fn find_tree(map: &[MapLine]) -> bool {
+fn find_tree(map: &[Robot]) -> bool {
     for robot in map {
         if find_diagonal(map, robot.position.0, robot.position.1, 1, 5) {
             return true;
@@ -60,13 +69,12 @@ fn find_tree(map: &[MapLine]) -> bool {
     false
 }
 
-fn parse_map(input: String) -> Vec<MapLine> {
+fn parse_map(input: String) -> Vec<Robot> {
     input
         .get_lines()
         .iter()
         .map(|line| {
-            let splitted = line
-                .split_whitespace()
+            line.split_whitespace()
                 .flat_map(|part| {
                     part.split(',')
                         .map(|number| {
@@ -79,16 +87,13 @@ fn parse_map(input: String) -> Vec<MapLine> {
                         })
                         .collect::<Vec<i128>>()
                 })
-                .collect::<Vec<i128>>();
-            MapLine {
-                position: (splitted[0], splitted[1]),
-                velocities: (splitted[2], splitted[3]),
-            }
+                .collect::<Vec<i128>>()
+                .into()
         })
-        .collect::<Vec<MapLine>>()
+        .collect()
 }
 
-fn robo_move(robot: &mut MapLine, width: i128, height: i128) {
+fn robo_move(robot: &mut Robot, width: i128, height: i128) {
     robot.position.0 += robot.velocities.0;
     if robot.position.0 < 0 {
         robot.position.0 += width;
@@ -104,7 +109,7 @@ fn robo_move(robot: &mut MapLine, width: i128, height: i128) {
     }
 }
 
-fn part1(map: &mut [MapLine], width: i128, height: i128) {
+fn part1(map: &mut [Robot], width: i128, height: i128) {
     for _ in 0..100 {
         for robot in &mut *map {
             robo_move(robot, width, height);
@@ -131,7 +136,7 @@ fn part1(map: &mut [MapLine], width: i128, height: i128) {
     println!("Part 1: {}", topleft * topright * bottomleft * bottomright);
 }
 
-fn part2(map: &mut [MapLine], width: i128, height: i128) {
+fn part2(map: &mut [Robot], width: i128, height: i128) {
     for i in 0.. {
         for robot in &mut *map {
             robo_move(robot, width, height);
