@@ -187,6 +187,20 @@ fn p2_move_down(map: &mut [Vec<char>], y: usize, x: usize) {
     }
 }
 
+fn move_left(map: &mut [Vec<char>], y: &mut usize, x: &mut usize) {
+    let chars = ['O', '[', ']'];
+
+    while chars.contains(&map[*y][*x - 1]) {
+        *x -= 1;
+    }
+
+    while map[*y][*x - 1] == '.' {
+        map[*y][*x - 1] = map[*y][*x];
+        map[*y][*x] = '.';
+        *x += 1;
+    }
+}
+
 fn part2(map: &mut [Vec<char>], moves: &[char]) -> usize {
     let (mut y, mut x) = find_start(&map).unwrap();
     for instruction in moves {
