@@ -104,3 +104,33 @@ impl StringHandling for String {
         self.trim().chars().collect()
     }
 }
+
+#[derive(Debug)]
+pub enum Errors {
+    OutOfBoundsError,
+    IntegerOverflow,
+}
+
+pub trait UsizeOffset {
+    fn offset(&self, value: isize) -> Result<Self, Errors>
+    where
+        Self: Sized;
+}
+
+impl UsizeOffset for usize {
+    fn offset(&self, value: isize) -> Result<Self, Errors>
+    where
+        Self: Sized,
+    {
+        if value < 0 {
+            let abs_offset = value.unsigned_abs();
+            if abs_offset > *self {
+                return Err(Errors::OutOfBoundsError);
+            }
+            Ok(*self - abs_offset)
+        } else {
+            self.checked_add(value as usize)
+                .ok_or(Errors::IntegerOverflow)
+        }
+    }
+}
