@@ -1,3 +1,4 @@
+use std::array;
 use std::fmt::{Display, Formatter, Result};
 use std::fs::read_to_string;
 use std::ops::Deref;
@@ -141,12 +142,15 @@ fn part2(instructions: &Instructions) -> usize {
     lowest
 }
 
-fn input_parsing(input: &[String]) -> (Vec<usize>, Instructions) {
-    let registers = input
-        .iter()
-        .take(3)
-        .map(|line| line.split(": ").last().unwrap().parse::<usize>().unwrap())
-        .collect();
+fn input_parsing(input: &[String]) -> ([usize; 3], Instructions) {
+    let registers = array::from_fn(|i| {
+        input[i]
+            .split(": ")
+            .last()
+            .unwrap()
+            .parse::<usize>()
+            .unwrap()
+    });
 
     let instructions = input[4]
         .split(": ")
