@@ -99,7 +99,7 @@ fn find_match(instructions: &Instructions, start: usize, step: usize) -> usize {
 
     loop {
         let result = calculation(&mut [current, 0, 0], instructions);
-        if result == instructions {
+        if result == *instructions {
             return current;
         } else if result.len() > instructions.len() {
             println!(
@@ -120,7 +120,7 @@ fn find_lower_number(instructions: &Instructions, start: usize, step: usize) -> 
 
     for _ in 0..100000 {
         let result = calculation(&mut [current, 0, 0], instructions);
-        if result == instructions {
+        if result == *instructions {
             lowest = current;
         }
         current -= step;
