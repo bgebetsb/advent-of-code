@@ -4,23 +4,22 @@ use utils::*;
 fn find_matches<'a>(
     design: &'a str,
     patterns: &[&'a str],
-    cache: &mut HashMap<(&'a str, &'a str), usize>,
+    cache: &mut HashMap<&'a str, usize>,
 ) -> usize {
     let mut combinations = 0;
 
     if design.is_empty() {
         return 1;
+    } else if let Some(value) = cache.get(&design) {
+        return *value;
     }
 
     for &pattern in patterns {
-        if let Some(found) = cache.get(&(design, pattern)) {
-            combinations += found;
-        } else if design.len() >= pattern.len() && &design[0..pattern.len()] == pattern {
-            let result = find_matches(&design[pattern.len()..], patterns, cache);
-            cache.insert((design, pattern), result);
-            combinations += result;
+        if design.len() >= pattern.len() && &design[0..pattern.len()] == pattern {
+            combinations += find_matches(&design[pattern.len()..], patterns, cache);
         }
     }
+    cache.insert(design, combinations);
     combinations
 }
 
