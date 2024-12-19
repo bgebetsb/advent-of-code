@@ -1,49 +1,42 @@
 use std::{collections::HashMap, fs::read_to_string, io::Error};
-use utils::*;
 
 fn find_matches<'a>(
     design: &'a str,
     patterns: &[&'a str],
     cache: &mut HashMap<&'a str, usize>,
 ) -> usize {
-    let mut combinations = 0;
-
     if design.is_empty() {
         return 1;
     } else if let Some(value) = cache.get(&design) {
         return *value;
     }
 
-    for &pattern in patterns {
-        if design.len() >= pattern.len() && &design[0..pattern.len()] == pattern {
-            combinations += find_matches(&design[pattern.len()..], patterns, cache);
-        }
-    }
+    let combinations = patterns
+        .iter()
+        .filter(|&pattern| design.starts_with(pattern))
+        .map(|pattern| find_matches(&design[pattern.len()..], patterns, cache))
+        .sum();
+
     cache.insert(design, combinations);
     combinations
 }
 
-fn calculate(designs: &[String], patterns: &[&str]) -> (usize, usize) {
-    let mut part1 = 0;
-    let mut part2 = 0;
+fn calculate(designs: &[&str], patterns: &[&str]) -> (usize, usize) {
     let mut cache = HashMap::new();
 
-    for design in designs {
-        let result = find_matches(design, patterns, &mut cache);
-
-        if result > 0 {
-            part1 += 1;
-            part2 += result;
-        }
-    }
-    (part1, part2)
+    designs
+        .iter()
+        .map(|design| find_matches(design, patterns, &mut cache))
+        .filter(|result| *result != 0)
+        .fold((0, 0), |old, new| (old.0 + 1, old.1 + new))
 }
 
 fn main() -> Result<(), Error> {
-    let input = read_to_string("input.txt")?.get_lines();
+    let input = read_to_string("input.txt")?;
+    let mut lines = input.lines();
 
-    let patterns: Vec<&str> = input.first().unwrap().split(", ").collect();
-    let designs: Vec<String> = input.iter().skip(2).map(String::from).collect();
+    let patterns: Vec<&str> = lines.next().unwrap().split(", ").collect();
+    let designs: Vec<&str> = lines.skip(1).collect();
 
     let (part1, part2) = calculate(&designs, &patterns);
     println!("Part 1: {}", part1);
