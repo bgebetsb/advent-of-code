@@ -1,4 +1,13 @@
-use std::str::FromStr;
+use std::{
+    marker::Send,
+    marker::Sync,
+    str::FromStr,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        mpsc, Arc,
+    },
+    thread,
+};
 
 pub trait StringVecHandling {
     fn lines_as_chars(&self) -> Vec<Vec<char>>;
@@ -133,4 +142,54 @@ impl UsizeOffset for usize {
                 .ok_or(Errors::IntegerOverflow)
         }
     }
+}
+
+pub trait Bruteforce {
+    fn skip(&mut self, steps: usize);
+}
+
+pub fn bruteforce<F, T>(function: F, parameter: T, threads: usize) -> Option<usize>
+where
+    F: Send + 'static + Fn(&T) -> Option<usize> + Sync,
+    T: Bruteforce + Clone + Send + 'static,
+{
+    let found = Arc::new(AtomicBool::new(false));
+    let (tx, rx) = mpsc::channel();
+
+    let function = Arc::new(function);
+    let mut handles = vec![];
+
+    for thread_id in 0..threads {
+        let found = Arc::clone(&found);
+        let function = Arc::clone(&function);
+        let tx = tx.clone();
+        let mut parameter = parameter.clone();
+
+        let handle = thread::spawn(move || {
+            parameter.skip(thread_id);
+            loop {
+                if found.load(Ordering::SeqCst) {
+                    return;
+                }
+
+                if let Some(value) = function(&parameter) {
+                    if !found.swap(true, Ordering::SeqCst) {
+                        let _ = tx.send(value);
+                    }
+                }
+                parameter.skip(threads);
+            }
+        });
+
+        handles.push(handle);
+    }
+
+    drop(tx);
+
+    let result = rx.recv().ok();
+
+    for handle in handles {
+        let _ = handle.join();
+    }
+    result
 }

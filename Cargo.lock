@@ -12,6 +12,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "bruteforce_test"
+version = "0.1.0"
+dependencies = [
+ "utils",
+]
+
+[[package]]
 name = "day01"
 version = "0.1.0"
 dependencies = [
