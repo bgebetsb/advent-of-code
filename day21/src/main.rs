@@ -28,10 +28,10 @@ fn find_shortest_paths(
                 if new_y < keypad.len() && new_x < keypad[new_y].len() {
                     let steps = steps + 1;
                     let path = match (cur_y, cur_x) {
-                        (-1, 0) => format!("{}^", path),
-                        (1, 0) => format!("{}v", path),
                         (0, -1) => format!("{}<", path),
+                        (1, 0) => format!("{}v", path),
                         (0, 1) => format!("{}>", path),
+                        (-1, 0) => format!("{}^", path),
                         _ => panic!("Invalid direction"),
                     };
 
@@ -86,30 +86,65 @@ impl Robot {
         }
     }
 
-    fn calculate_steps(&mut self, input: &str, update_position: bool) -> String {
+    fn calculate_steps(
+        &mut self,
+        input: &str,
+        update_position: bool,
+        cache: &mut HashMap<(Option<Vec<char>>, char, usize, usize), String>,
+    ) -> String {
         let mut output = String::new();
+        let chars = input.chars().collect::<Vec<char>>();
+        let mut i = 0;
+
+        let mut surrounding = None;
+        if let Ok(offset) = i.offset(-5) {
+            surrounding = Some(chars[offset..i].to_vec());
+        }
 
         let (old_y, old_x) = (self.pos_y, self.pos_x);
+        // let mut cache: HashMap<(Option<Vec<char>>, char, usize, usize), String> = HashMap::new();
 
         for c in input.chars() {
+            if let Some(value) = cache.get(&(surrounding.clone(), c, self.pos_y, self.pos_x)) {
+                if c == 'A' && self.keypad[self.pos_y][self.pos_x] == '<' {
+                    output.push_str(">>^A");
+                } else {
+                    output.push_str(value);
+                }
+                self.update_position(c);
+                i += 1;
+                if let Ok(offset) = i.offset(-1) {
+                    surrounding = Some(chars[offset..i].to_vec());
+                } else {
+                    surrounding = None;
+                }
+                continue;
+            }
             let result = find_shortest_paths(&self.keypad, self.pos_y, self.pos_x, c);
             let mut lowest = result[0].2.clone();
             if let Some(ref mut next) = self.next {
-                let mut lowest_length = next.calculate_steps(&lowest, false).len();
+                let mut lowest_length = next.calculate_steps(&lowest, false, cache).len();
                 for item in result.iter().skip(1) {
-                    let result = next.calculate_steps(&item.2, false);
+                    let result = next.calculate_steps(&item.2, false, cache);
                     if result.len() < lowest_length {
                         lowest = item.2.clone();
                         lowest_length = result.len();
                     }
                 }
             }
-            output.push_str(&lowest);
+            cache.insert((surrounding, c, self.pos_y, self.pos_x), lowest.clone());
+            i += 1;
+            if let Ok(offset) = i.offset(-1) {
+                surrounding = Some(chars[offset..i].to_vec());
+            } else {
+                surrounding = None;
+            }
             self.update_position(c);
+            output.push_str(&lowest);
         }
 
         if let Some(ref mut next) = self.next {
-            return next.calculate_steps(&output, true);
+            return next.calculate_steps(&output, true, cache);
         }
 
         if update_position {
@@ -137,56 +172,66 @@ fn main() -> Result<(), io::Error> {
     let mut robo3 = Robot::new(false, None);
     let mut robo2 = Robot::new(false, Some(Box::new(robo3)));
     let mut robo = Robot::new(true, Some(Box::new(robo2)));
+    let mut cache = HashMap::new();
 
     println!("EXAMPLES");
-    println!("{}", robo.calculate_steps("029A", true).len());
-    println!("{}", robo.calculate_steps("980A", true).len());
-    println!("{}", robo.calculate_steps("179A", true).len());
-    println!("{}", robo.calculate_steps("456A", true).len());
-    println!("{}", robo.calculate_steps("379A", true).len());
+    println!(
+        "Without Cache: {}",
+        robo.calculate_steps("029A", true, &mut cache)
+    );
+    println!("{}", robo.calculate_steps("029A", true, &mut cache).len());
+    println!("{}", robo.calculate_steps("980A", true, &mut cache).len());
+    println!("{}", robo.calculate_steps("179A", true, &mut cache).len());
+    println!("{}", robo.calculate_steps("456A", true, &mut cache).len());
+    println!("{}", robo.calculate_steps("379A", true, &mut cache).len());
 
     println!("REAL");
 
-    println!("{}", robo.calculate_steps("540A", true).len());
-    println!("{}", robo.calculate_steps("582A", true).len());
-    println!("{}", robo.calculate_steps("169A", true).len());
-    println!("{}", robo.calculate_steps("593A", true).len());
-    println!("{}", robo.calculate_steps("579A", true).len());
+    println!("{}", robo.calculate_steps("540A", true, &mut cache).len());
+    println!("{}", robo.calculate_steps("582A", true, &mut cache).len());
+    println!("{}", robo.calculate_steps("169A", true, &mut cache).len());
+    println!("{}", robo.calculate_steps("593A", true, &mut cache).len());
+    println!("{}", robo.calculate_steps("579A", true, &mut cache).len());
 
-    /*
-        let mut robo26 = Robot::new(false, None);
-        let mut robo25 = Robot::new(false, Some(Box::new(robo26)));
-        let mut robo24 = Robot::new(false, Some(Box::new(robo25)));
-        let mut robo23 = Robot::new(false, Some(Box::new(robo24)));
-        let mut robo22 = Robot::new(false, Some(Box::new(robo23)));
-        let mut robo21 = Robot::new(false, Some(Box::new(robo22)));
-        let mut robo20 = Robot::new(false, Some(Box::new(robo21)));
-        let mut robo19 = Robot::new(false, Some(Box::new(robo20)));
-        let mut robo18 = Robot::new(false, Some(Box::new(robo19)));
-        let mut robo17 = Robot::new(false, Some(Box::new(robo18)));
-        let mut robo16 = Robot::new(false, Some(Box::new(robo17)));
-        let mut robo15 = Robot::new(false, Some(Box::new(robo16)));
-        let mut robo14 = Robot::new(false, Some(Box::new(robo15)));
-        let mut robo13 = Robot::new(false, Some(Box::new(robo14)));
-        let mut robo12 = Robot::new(false, Some(Box::new(robo13)));
-        let mut robo11 = Robot::new(false, Some(Box::new(robo12)));
-        let mut robo10 = Robot::new(false, Some(Box::new(robo11)));
-        let mut robo9 = Robot::new(false, Some(Box::new(robo10)));
-        let mut robo8 = Robot::new(false, Some(Box::new(robo9)));
-        let mut robo7 = Robot::new(false, Some(Box::new(robo8)));
-        let mut robo6 = Robot::new(false, Some(Box::new(robo7)));
-        let mut robo5 = Robot::new(false, Some(Box::new(robo6)));
-        let mut robo4 = Robot::new(false, Some(Box::new(robo5)));
-        let mut robo3 = Robot::new(false, Some(Box::new(robo4)));
-        let mut robo2 = Robot::new(false, Some(Box::new(robo3)));
-        let mut robo = Robot::new(true, Some(Box::new(robo2)));
+    let mut robo26 = Robot::new(false, None);
+    let mut robo25 = Robot::new(false, Some(Box::new(robo26)));
+    let mut robo24 = Robot::new(false, Some(Box::new(robo25)));
+    let mut robo23 = Robot::new(false, Some(Box::new(robo24)));
+    let mut robo22 = Robot::new(false, Some(Box::new(robo23)));
+    let mut robo21 = Robot::new(false, Some(Box::new(robo22)));
+    let mut robo20 = Robot::new(false, Some(Box::new(robo21)));
+    let mut robo19 = Robot::new(false, Some(Box::new(robo20)));
+    let mut robo18 = Robot::new(false, Some(Box::new(robo19)));
+    let mut robo17 = Robot::new(false, Some(Box::new(robo18)));
+    let mut robo16 = Robot::new(false, Some(Box::new(robo17)));
+    let mut robo15 = Robot::new(false, Some(Box::new(robo16)));
+    let mut robo14 = Robot::new(false, Some(Box::new(robo15)));
+    let mut robo13 = Robot::new(false, Some(Box::new(robo14)));
+    let mut robo12 = Robot::new(false, Some(Box::new(robo13)));
+    let mut robo11 = Robot::new(false, Some(Box::new(robo12)));
+    let mut robo10 = Robot::new(false, Some(Box::new(robo11)));
+    let mut robo9 = Robot::new(false, Some(Box::new(robo10)));
+    let mut robo8 = Robot::new(false, Some(Box::new(robo9)));
+    let mut robo7 = Robot::new(false, Some(Box::new(robo8)));
+    let mut robo6 = Robot::new(false, Some(Box::new(robo7)));
+    let mut robo5 = Robot::new(false, Some(Box::new(robo6)));
+    let mut robo4 = Robot::new(false, Some(Box::new(robo5)));
+    let mut robo3 = Robot::new(false, Some(Box::new(robo4)));
+    let mut robo2 = Robot::new(false, Some(Box::new(robo3)));
+    let mut robo = Robot::new(true, Some(Box::new(robo2)));
 
-        println!("{}", robo.calculate_steps("540A", true).len() * 540);
-        println!("{}", robo.calculate_steps("582A", true).len() * 582);
-        println!("{}", robo.calculate_steps("169A", true).len() * 169);
-        println!("{}", robo.calculate_steps("593A", true).len() * 593);
-        println!("{}", robo.calculate_steps("579A", true).len() * 579);
-    */
+    let sum1 = robo.calculate_steps("540A", true, &mut cache).len();
+    println!("Sum 1: {}", sum1);
+    let sum2 = robo.calculate_steps("582A", true, &mut cache).len();
+    println!("Sum 2: {}", sum2);
+    let sum3 = robo.calculate_steps("169A", true, &mut cache).len();
+    println!("Sum 3: {}", sum3);
+    let sum4 = robo.calculate_steps("593A", true, &mut cache).len();
+    println!("Sum 4: {}", sum4);
+    let sum5 = robo.calculate_steps("579A", true, &mut cache).len();
+    println!("Sum 5: {}", sum5);
+
+    println!("Sum: {}", sum1 + sum2 + sum3 + sum4 + sum5);
 
     // println!();
     Ok(())
