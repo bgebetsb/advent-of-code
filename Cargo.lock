@@ -100,7 +100,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "day21"
+name = "day21_rewrite"
+version = "0.1.0"
+dependencies = [
+ "utils",
+]
+
+[[package]]
+name = "day22"
+version = "0.1.0"
+dependencies = [
+ "utils",
+]
+
+[[package]]
+name = "day23"
 version = "0.1.0"
 dependencies = [
  "utils",
