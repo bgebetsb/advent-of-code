@@ -5,7 +5,6 @@ use std::{
     mem,
 };
 
-use regex::Regex;
 use utils::*;
 
 fn resolve_item(
@@ -207,30 +206,30 @@ fn part2(connection_map: &mut HashMap<String, Connection>, value_map: &HashMap<S
 fn main() -> Result<(), Error> {
     let input = read_to_string("input.txt")?.get_lines();
 
-    let mut map = HashMap::new();
-    let first: Vec<(String, Vec<u8>)> = input.split_with_key(':');
-    for item in &first {
-        map.insert(item.0.clone(), item.1[0]);
+    let mut value_map = HashMap::new();
+    let values: Vec<(String, Vec<u8>)> = input.split_with_key(':');
+    for item in &values {
+        value_map.insert(item.0.clone(), item.1[0]);
     }
-    let mut connections = HashMap::new();
 
-    let re = Regex::new(r"(...) (AND|OR|XOR) (...) -> (...)").unwrap();
-    for line in input {
-        if let Some(matches) = re.captures(&line) {
+    let mut connections = HashMap::new();
+    for line in &input {
+        let splitted: Vec<&str> = line.split(" ").collect();
+        if splitted.len() == 5 {
             let item = Connection::new(
-                matches[1].to_string(),
-                &matches[2],
-                matches[3].to_string(),
-                matches[4].to_string(),
+                splitted[0].to_string(),
+                splitted[1],
+                splitted[2].to_string(),
+                splitted[4].to_string(),
             );
-            connections.insert(matches[4].to_string(), item);
+            connections.insert(splitted[4].to_string(), item);
         }
     }
 
-    let part1 = calculate(&connections, &map);
+    let part1 = calculate(&connections, &value_map);
     println!("Part 1: {}", part1);
 
-    part2(&mut connections.clone(), &map);
+    part2(&mut connections.clone(), &value_map);
 
     Ok(())
 }
