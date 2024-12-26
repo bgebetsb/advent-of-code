@@ -54,14 +54,30 @@ fn part1(map: &mut [Vec<MapField>], tiles: &[[usize; 2]]) -> Option<usize> {
     search_path(map, 0, 0)
 }
 
-fn part2(map: &mut [Vec<MapField>], tiles: &[[usize; 2]]) -> Option<(usize, usize)> {
-    for tile in tiles {
-        map[tile[1]][tile[0]] = MapField::Corrupted;
+fn part2(map: &mut [Vec<MapField>], tiles: &[[usize; 2]]) -> (usize, usize) {
+    for i in 0..1024 {
+        map[tiles[i][1]][tiles[i][0]] = MapField::Corrupted;
+    }
+
+    let mut min = 1024;
+    let mut max = tiles.len();
+    let mut current = (min + max) / 2;
+    while min + 1 < max {
+        for i in min..current {
+            map[tiles[i][1]][tiles[i][0]] = MapField::Corrupted;
+        }
         if search_path(map, 0, 0).is_none() {
-            return Some((tile[0], tile[1]));
+            max = current;
+            current = (min + max) / 2;
+            for i in current..max {
+                map[tiles[i][1]][tiles[i][0]] = MapField::Space;
+            }
+        } else {
+            min = current;
+            current = (min + max) / 2;
         }
     }
-    None
+    (tiles[current][0], tiles[current][1])
 }
 
 fn main() -> Result<(), Error> {
@@ -84,9 +100,8 @@ fn main() -> Result<(), Error> {
         println!("Part 1: {}", steps);
     }
 
-    if let Some((x, y)) = part2(&mut map.clone(), &tiles) {
-        println!("Part 2: {},{}", x, y);
-    }
+    let (x, y) = part2(&mut map.clone(), &tiles);
+    println!("Part 2: {},{}", x, y);
 
     Ok(())
 }
