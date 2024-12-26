@@ -1,5 +1,5 @@
 use std::{fs::read_to_string, io};
-use utils::*;
+use utils_2024::*;
 
 fn main() -> Result<(), io::Error> {
     let numbers = read_to_string("input.txt")?

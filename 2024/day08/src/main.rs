@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs::read_to_string;
 use std::io;
-use utils::*;
+use utils_2024::*;
 
 #[derive(Clone)]
 struct Item {

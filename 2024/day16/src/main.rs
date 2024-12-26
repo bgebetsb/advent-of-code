@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use std::fs::read_to_string;
 use std::io;
-use utils::*;
+use utils_2024::*;
 
 fn find_char_pos(map: &[Vec<char>], search: char) -> Option<(usize, usize)> {
     for (i, line) in map.iter().enumerate() {

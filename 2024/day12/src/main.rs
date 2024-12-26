@@ -1,7 +1,7 @@
 use std::fs::read_to_string;
 use std::ops::AddAssign;
 use std::{char, io};
-use utils::*;
+use utils_2024::*;
 
 struct Plant(char, bool);
 

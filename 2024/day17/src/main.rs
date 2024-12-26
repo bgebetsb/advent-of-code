@@ -2,7 +2,7 @@ use std::array;
 use std::fmt::{Display, Formatter, Result};
 use std::fs::read_to_string;
 use std::ops::Deref;
-use utils::*;
+use utils_2024::*;
 
 #[derive(PartialEq)]
 struct Instructions(Vec<usize>);

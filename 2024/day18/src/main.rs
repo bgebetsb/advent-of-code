@@ -3,7 +3,7 @@ use std::{
     fs::read_to_string,
     io::Error,
 };
-use utils::*;
+use utils_2024::*;
 
 #[derive(Clone, PartialEq)]
 enum MapField {

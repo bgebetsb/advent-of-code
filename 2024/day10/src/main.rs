@@ -1,6 +1,6 @@
 use std::fs::read_to_string;
 use std::io;
-use utils::*;
+use utils_2024::*;
 
 fn search_path(input: &mut [Vec<u8>], y: usize, x: usize, value: u8, part1: bool) -> u32 {
     if value == 9 {

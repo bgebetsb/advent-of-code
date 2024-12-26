@@ -1,5 +1,5 @@
 use std::{collections::HashMap, fs::read_to_string, io::Error};
-use utils::*;
+use utils_2024::*;
 
 fn mix(secret: usize, value: usize) -> usize {
     secret ^ value

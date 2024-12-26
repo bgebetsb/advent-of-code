@@ -1,8 +1,8 @@
 [package]
-name = "day06"
+name = "day06_2024"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-utils = { path = "../utils" }
+utils_2024 = { path = "../utils" }
 

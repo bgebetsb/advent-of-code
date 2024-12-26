@@ -1,5 +1,5 @@
 use std::{fs::read_to_string, io};
-use utils::*;
+use utils_2024::*;
 
 fn calculate(ax: isize, ay: isize, bx: isize, by: isize, px: isize, py: isize) -> Option<isize> {
     let determinant = ax * by - bx * ay;

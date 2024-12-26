@@ -1,5 +1,5 @@
 use std::{error::Error, fs::read_to_string};
-use utils::*;
+use utils_2024::*;
 
 enum Directions {
     Left,

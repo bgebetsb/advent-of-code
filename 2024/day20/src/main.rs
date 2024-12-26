@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::collections::VecDeque;
 use std::fs::read_to_string;
 use std::io;
-use utils::*;
+use utils_2024::*;
 
 #[derive(Debug, PartialEq)]
 enum MapField {

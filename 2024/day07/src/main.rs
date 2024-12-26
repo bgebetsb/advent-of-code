@@ -1,6 +1,6 @@
 use std::fs::read_to_string;
 use std::io;
-use utils::*;
+use utils_2024::*;
 
 struct InputLine {
     key: i128,
