@@ -1,4 +1,5 @@
 target/
-day06/main.go
+2024/day06/main.go
+2024/day06/main.cpp
 .vscode/settings.json
-*/input.txt
+*/*/input.txt
