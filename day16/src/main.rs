@@ -42,7 +42,7 @@ fn search_path(
 ) -> Option<(usize, HashSet<(usize, usize)>)> {
     let horizontal_vertical = match direction {
         'N' | 'S' => 'V',
-        'W' | 'E' => 'E',
+        'W' | 'E' => 'H',
         _ => panic!("Invalid direction"),
     };
 
