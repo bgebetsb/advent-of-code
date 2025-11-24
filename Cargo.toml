@@ -28,4 +28,5 @@ members = [
 	"2024/day24",
 	"2024/day25",
 	"2024/utils",
+	"utils",
 ]
