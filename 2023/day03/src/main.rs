@@ -51,15 +51,15 @@ fn part1(grid: &[Vec<char>]) -> usize {
             }
         }
 
-        if let Some(start) = number_start {
-            if adjacent_symbol {
-                let number = grid[y][start..grid[y].len()]
-                    .iter()
-                    .collect::<String>()
-                    .parse::<usize>()
-                    .unwrap();
-                sum += number;
-            }
+        if let Some(start) = number_start
+            && adjacent_symbol
+        {
+            let number = grid[y][start..grid[y].len()]
+                .iter()
+                .collect::<String>()
+                .parse::<usize>()
+                .unwrap();
+            sum += number;
         }
     }
 

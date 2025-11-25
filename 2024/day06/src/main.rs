@@ -17,9 +17,9 @@ struct MapField {
 }
 
 impl MapField {
-    fn new(field_type: char) -> Self {
+    fn new(field_type: &char) -> Self {
         MapField {
-            field_type,
+            field_type: *field_type,
             visited: Vec::new(),
         }
     }
@@ -102,18 +102,14 @@ fn run_simulation(og_map: &[Vec<MapField>]) -> MapResult {
 }
 
 fn convert_input(input: &[Vec<char>]) -> Vec<Vec<MapField>> {
-    let mut mapfields = Vec::new();
-    for i in 0..input.len() {
-        mapfields.push(Vec::new());
-        for j in 0..input[i].len() {
-            mapfields[i].push(MapField::new(input[i][j]));
-        }
-    }
-    mapfields
+    input
+        .iter()
+        .map(|item| item.iter().map(MapField::new).collect())
+        .collect()
 }
 
 fn main() -> Result<(), io::Error> {
-    let chars = read_to_string("input.txt")?.get_lines().lines_as_chars();
+    let chars = read_to_string("example.txt")?.get_lines().lines_as_chars();
     let mut map = convert_input(&chars);
 
     let result = run_simulation(&map);

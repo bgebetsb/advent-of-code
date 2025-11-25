@@ -9,7 +9,7 @@ fn main() -> Result<(), Error> {
         .map(|line| {
             let mut filtered = line.chars().filter(|c| c.is_ascii_digit());
             let first = filtered.next().unwrap();
-            let last = filtered.last().unwrap_or(first);
+            let last = filtered.next_back().unwrap_or(first);
             format!("{}{}", first, last).parse::<usize>().unwrap()
         })
         .sum();
@@ -37,7 +37,7 @@ fn main() -> Result<(), Error> {
 
             let mut filtered = line.chars().filter(|c| c.is_ascii_digit());
             let first = filtered.next().unwrap();
-            let last = filtered.last().unwrap_or(first);
+            let last = filtered.next_back().unwrap_or(first);
             format!("{}{}", first, last).parse::<usize>().unwrap()
         })
         .sum();
