@@ -5,7 +5,7 @@ pub trait StringVecHandling {
     fn digits_grid(&self) -> Vec<Vec<u8>>;
     fn numbers_in_line(&self, delimiter: u8) -> Vec<Vec<i128>>;
     fn numbers_in_column(&self, delimiter: u8) -> Vec<Vec<i128>>;
-    fn split_with_key<K, V>(&self, delimiter: char) -> Vec<(K, Vec<V>)>
+    fn split_with_key<K, V>(&self, delimiter: char, value_delimiter: &[char]) -> Vec<(K, Vec<V>)>
     where
         K: FromStr,
         V: FromStr;
@@ -58,7 +58,7 @@ impl StringVecHandling for Vec<String> {
         columns
     }
 
-    fn split_with_key<K, V>(&self, delimiter: char) -> Vec<(K, Vec<V>)>
+    fn split_with_key<K, V>(&self, delimiter: char, value_delimiter: &[char]) -> Vec<(K, Vec<V>)>
     where
         K: FromStr,
         V: FromStr,
@@ -79,7 +79,8 @@ impl StringVecHandling for Vec<String> {
                 .expect("Could not parse key");
 
             let values: Vec<V> = parts[1]
-                .split_whitespace()
+                .split(value_delimiter)
+                .filter(|v| !v.is_empty())
                 .filter_map(|v| v.parse::<V>().ok())
                 .collect();
 
