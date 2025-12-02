@@ -33,42 +33,24 @@ fn main() -> Result<(), io::Error> {
                 .fold((0, 0), |(part1_sum, part2_sum), number| {
                     let str: Vec<_> = number.to_string().chars().collect();
 
-                    let mut part1_invalid = false;
-                    let mut part2_invalid = false;
-                    for i in 1..str.len() {
-                        if part1_invalid && part2_invalid {
-                            break;
+                    for i in (1..=(str.len() / 2)).rev() {
+                        if str.len() % i != 0 {
+                            continue;
                         }
 
-                        let part1: Vec<_> = str.chunks(i).collect();
-                        let part2: HashSet<_> = part1.iter().collect();
-
-                        if part1.len() == 2 && part1[0] == part1[1] {
-                            part1_invalid = true;
-                        }
+                        let part2: HashSet<_> = str.chunks(i).collect();
 
                         if part2.len() == 1 {
-                            part2_invalid = true;
+                            if i * 2 == str.len() {
+                                return (part1_sum + number, part2_sum + number);
+                            }
+                            return (part1_sum, part2_sum + number);
                         }
                     }
 
-                    let part1_sum = if part1_invalid {
-                        part1_sum + number
-                    } else {
-                        part1_sum
-                    };
-
-                    let part2_sum = if part2_invalid {
-                        part2_sum + number
-                    } else {
-                        part2_sum
-                    };
                     (part1_sum, part2_sum)
-                    // (part1_invalid, part2_invalid)
-                    // false
                 });
             (part1_sum + part1, part2_sum + part2)
-            // .sum::<usize>()
         });
 
     println!("Part 1: {:?}", part1);
