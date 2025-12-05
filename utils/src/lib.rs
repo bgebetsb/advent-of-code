@@ -1,3 +1,4 @@
+pub mod grid;
 pub mod math;
 pub mod ranges;
 pub mod string_handling;
