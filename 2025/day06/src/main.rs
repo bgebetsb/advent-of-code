@@ -11,7 +11,7 @@ fn calc(numbers: &[Vec<i128>], operations: &[&str]) -> i128 {
             match op.chars().next().unwrap() {
                 '*' => sum *= *number,
                 '+' => sum += *number,
-                _ => unimplemented!(),
+                _ => panic!(),
             }
         }
 
@@ -21,51 +21,48 @@ fn calc(numbers: &[Vec<i128>], operations: &[&str]) -> i128 {
     total
 }
 
-fn parsing_hell_pt2(number_input: &[Vec<char>], op_line: &str) -> Vec<Vec<i128>> {
-    let op_pos: Vec<usize> = op_line
-        .chars()
-        .enumerate()
-        .filter_map(|(pos, c)| {
-            if c == '+' || c == '*' {
-                Some(pos)
-            } else {
-                None
+fn calc_part2(input: &[Vec<char>]) -> i128 {
+    let longest_line = input.iter().map(|line| line.len()).max().unwrap();
+    let mut op = None;
+    let mut numbers: Vec<i128> = Vec::new();
+    let mut total = 0;
+
+    for x in 0..longest_line {
+        let mut nbr_str = String::new();
+        for line in input {
+            if x >= line.len() {
+                continue;
             }
-        })
-        .collect();
 
-    let mut cur_pos = number_input.iter().map(|line| line.len()).max().unwrap() - 1;
-    let mut new_numbers = Vec::new();
-
-    for op_pos in op_pos.iter().rev() {
-        let mut numbers: Vec<i128> = Vec::new();
-
-        while cur_pos >= *op_pos {
-            let nbr_str: String = number_input
-                .iter()
-                .filter_map(|line| {
-                    if line[cur_pos].is_ascii_digit() {
-                        Some(line[cur_pos])
-                    } else {
-                        None
-                    }
-                })
-                .collect();
-
-            numbers.push(nbr_str.parse().unwrap());
-            if cur_pos == 0 {
-                break;
+            if line[x].is_ascii_digit() {
+                nbr_str.push(line[x]);
+            } else if line[x] == '+' || line[x] == '*' {
+                op = Some(line[x]);
             }
-            cur_pos -= 1;
         }
 
-        cur_pos = cur_pos.saturating_sub(1);
-        new_numbers.push(numbers);
+        if !nbr_str.is_empty() {
+            numbers.push(nbr_str.parse().unwrap());
+        }
+
+        if nbr_str.is_empty() || x + 1 == longest_line {
+            total += match op {
+                Some('+') => numbers
+                    .iter()
+                    .skip(1)
+                    .fold(*numbers.first().unwrap(), |total, number| total + *number),
+                Some('*') => numbers
+                    .iter()
+                    .skip(1)
+                    .fold(*numbers.first().unwrap(), |total, number| total * *number),
+                _ => panic!(),
+            };
+            numbers.clear();
+            op = None;
+        }
     }
 
-    new_numbers.reverse();
-
-    new_numbers
+    total
 }
 
 fn main() -> Result<(), io::Error> {
@@ -92,10 +89,9 @@ fn main() -> Result<(), io::Error> {
 
     let part1 = calc(&numbers_part1, &operations);
 
-    let numbers_part2 = parsing_hell_pt2(&number_lines.lines_as_chars(), op_line);
-    let part2 = calc(&numbers_part2, &operations);
-
     println!("Part 1: {}", part1);
+
+    let part2 = calc_part2(&content.lines_as_chars());
     println!("Part 2: {}", part2);
 
     Ok(())
