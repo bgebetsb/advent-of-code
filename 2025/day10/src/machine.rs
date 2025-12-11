@@ -4,7 +4,7 @@ use std::collections::VecDeque;
 pub struct Machine {
     pub indicator_lights: Vec<bool>,
     pub buttons: Vec<Vec<usize>>,
-    pub joltage: Vec<usize>,
+    pub _joltage: Vec<usize>,
 }
 
 impl TryFrom<String> for Machine {
@@ -13,7 +13,7 @@ impl TryFrom<String> for Machine {
     fn try_from(value: String) -> Result<Self, Self::Error> {
         let mut splitted: VecDeque<_> = value
             .split_whitespace()
-            .map(|item| item.replace(&['[', ']', '(', ')', '{', '}'], ""))
+            .map(|item| item.replace(['[', ']', '(', ')', '{', '}'], ""))
             .collect();
 
         if splitted.len() < 3 {
@@ -47,7 +47,7 @@ impl TryFrom<String> for Machine {
         Ok(Self {
             indicator_lights,
             buttons,
-            joltage,
+            _joltage: joltage,
         })
     }
 }

@@ -21,7 +21,7 @@ fn main() -> Result<(), io::Error> {
         .collect();
 
     println!("This might take a few seconds...");
-    let part1: usize = machines.iter().map(|machine| part1(machine)).sum();
+    let part1: usize = machines.iter().map(part1).sum();
 
     println!("Part 1: {}", part1);
 
