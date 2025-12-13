@@ -1,10 +1,17 @@
 use std::collections::VecDeque;
 
+#[derive(Debug, Clone)]
+pub struct Button {
+    pub _index: usize,
+    pub toggles: Vec<usize>,
+    pub pressed: bool,
+}
+
 #[derive(Debug)]
 pub struct Machine {
     pub indicator_lights: Vec<bool>,
-    pub buttons: Vec<Vec<usize>>,
-    pub _joltage: Vec<usize>,
+    pub buttons: Vec<Button>,
+    pub joltage: Vec<usize>,
 }
 
 impl TryFrom<String> for Machine {
@@ -36,18 +43,25 @@ impl TryFrom<String> for Machine {
 
         let buttons = splitted
             .iter()
-            .map(|button| {
-                button
+            .enumerate()
+            .map(|(index, button)| {
+                let toggles = button
                     .split(',')
                     .filter_map(|item| item.parse::<usize>().ok())
-                    .collect()
+                    .collect();
+
+                Button {
+                    _index: index,
+                    toggles,
+                    pressed: false,
+                }
             })
             .collect();
 
         Ok(Self {
             indicator_lights,
             buttons,
-            _joltage: joltage,
+            joltage,
         })
     }
 }
